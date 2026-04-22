@@ -144,22 +144,6 @@ python -m lyrics_render --input long_video.mp4 --keep-temp
 
 ---
 
-## 项目结构
-
-```
-lyrics_render/
-├── lyrics_render/           # 主包
-│   ├── _types.py           # AudioSegment, PipelineConfig
-│   ├── _audio.py           # AudioExtractor (FFmpeg 封装)
-│   ├── _vad.py             # VADSegmenter (WebRTC VAD)
-│   ├── _asr.py             # ASRTranscriber (FunASR)
-│   ├── _srt.py             # SRTGenerator (SRT/JSON 输出)
-│   ├── _pipeline.py        # LyricsRenderPipeline (编排器)
-│   └── _cli.py             # 命令行接口
-├── tests/                   # 单元测试
-└── docs/                    # 文档（中英文）
-```
-
 ## 使用方法
 
 ```bash
@@ -173,43 +157,42 @@ python -m lyrics_render --input video.mp4 --output subtitles.srt --device cuda
 python -m lyrics_render --input video.mp4 --output subtitles.srt --language en
 ```
 
----
-
-## 第五步：合并字幕到视频
+### 烧录字幕到视频
 
 生成 SRT 字幕后，可以使用 FFmpeg 将字幕烧录到视频中：
 
 ```bash
-# 将字幕烧录到视频（硬字幕）
-ffmpeg -i input_video.mp4 -vf subtitles=subtitles.srt -c:a copy output_with_subs.mp4
+# 烧录硬字幕到视频
+ffmpeg -i video.mp4 -vf subtitles=subtitles.srt -c:a copy output_with_subs.mp4
 
-# 或使用 ass 格式（支持更多样式）
-ffmpeg -i input_video.mp4 -vf ass=subtitles.ass -c:a copy output_with_subs.mp4
+# 如果视频已有音轨
+ffmpeg -i video.mp4 -vf subtitles=subtitles.srt -c:a copy -map 0:a? output.mp4
 ```
-
-**如果视频已经有字幕轨道，需要先禁用再添加新的：**
-```bash
-ffmpeg -i input_video.mp4 -vf subtitles=subtitles.srt -c:a copy -map 0:a? output.mp4
-```
-
-**常见选项：**
-- `-c:a copy` - 保留原始音频不重新编码（快速）
-- `-c:v libx264` - 重新编码视频（更高压缩率）
 
 ---
 
-## 完整工作流示例
+## 项目结构
 
-```bash
-# 1. 安装（如未安装）
-bash install.sh
-source venv/bin/activate
-
-# 2. 生成字幕
-python -m lyrics_render --input video.mp4 --output subtitles.srt --language en --device cuda
-
-# 3. 将字幕烧录到视频
-ffmpeg -i video.mp4 -vf subtitles=subtitles.srt -c:a copy video_with_subs.mp4
 ```
-
-详细安装说明请参阅 [INSTALL.md](INSTALL.md)（英文）。
+lyrics_render/
+├── lyrics_render/           # 主包
+│   ├── __init__.py          # 导出
+│   ├── __main__.py         # CLI 入口
+│   ├── _types.py           # AudioSegment, PipelineConfig
+│   ├── _audio.py           # AudioExtractor
+│   ├── _vad.py             # VADSegmenter
+│   ├── _asr.py             # ASRTranscriber
+│   ├── _srt.py             # SRTGenerator
+│   ├── _pipeline.py        # LyricsRenderPipeline
+│   └── _cli.py             # CLI 参数解析
+├── tests/                   # 单元测试
+├── docs/                    # 文档
+│   ├── THEORY.md          # 本文档 - 设计原理
+│   ├── THEORY_EN.md       # Design documentation (English)
+│   ├── INSTALL.md         # 中文安装指南
+│   └── INSTALL_EN.md      # Installation guide (English)
+├── README.md               # 中文快速概览
+├── README_EN.md            # English quick overview
+├── install.sh               # 安装脚本
+└── requirements.txt        # Python 依赖
+```

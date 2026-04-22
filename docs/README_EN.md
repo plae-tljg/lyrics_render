@@ -11,7 +11,7 @@ cd lyrics_render
 bash install.sh
 source venv/bin/activate
 
-# Run pipeline
+# Run pipeline (GPU)
 python -m lyrics_render --input video.mp4 --output subtitles.srt --device cuda
 ```
 
@@ -24,5 +24,8 @@ python -m lyrics_render --input video.mp4 --output subtitles.srt --device cuda
 
 ## Documentation
 
-- [Installation Guide](INSTALL.md) - Full setup instructions
-- [Chinese Documentation](README.md) - 中文文档
+| Document | Chinese | English |
+|---------|--------|---------|
+| Quick Overview | [README.md](README.md) | This file |
+| Installation | [INSTALL.md](INSTALL.md) | [docs/INSTALL_EN.md](docs/INSTALL_EN.md) |
+| Design Theory | [docs/THEORY.md](docs/THEORY.md) | [docs/THEORY_EN.md](docs/THEORY_EN.md) |

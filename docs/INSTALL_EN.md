@@ -1,57 +1,57 @@
-# Lyrics Render Pipeline - 安装与使用指南
+# Lyrics Render Pipeline - Installation & Usage
 
-## Google Colab（推荐）
+## Google Colab (Recommended)
 
-Colab 提供免费 GPU - **建议使用 GPU 以获得最佳性能**。
+Colab provides free GPU access - **use GPU for best performance**.
 
-### 1. 安装依赖
+### 1. Install Dependencies
 
 ```python
 !apt-get update && apt-get install -y ffmpeg
 
-# 安装 PyTorch (CUDA/GPU) - 推荐
+# Install PyTorch with CUDA (GPU) - recommended
 !pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu121
 
-# 安装基础依赖
+# Install basic dependencies
 !pip install pydub webrtcvad numpy scipy tqdm pytest
 
-# 从 GitHub 克隆并安装 FunASR（必需）
+# Clone and install FunASR from GitHub (required for our model)
 !git clone https://github.com/alibaba/FunASR.git
 !cd FunASR && pip install -e ./
 ```
 
-**仅 CPU 安装（较慢）：**
+**For CPU only (slower):**
 ```python
 !pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
 ```
 
-### 2. 上传项目
+### 2. Upload Project
 
-将 `lyrics_render/` 文件夹上传到 Colab，然后：
+Upload the `lyrics_render/` folder to Colab, then:
 ```python
 %cd lyrics_render
 ```
 
-### 3. 下载测试视频
+### 3. Download Test Video
 
 ```python
-# "What Would Happen If You Didn't Sleep?" - 5分钟，语音清晰
+# "What Would Happen If You Didn't Sleep?" - 5 min, clear speech
 !yt-dlp -f "best[height<=720]" -o "test_video.mp4" "https://www.youtube.com/watch?v=2X_2Eyb-8kg"
 ```
 
-### 4. 运行流水线
+### 4. Run Pipeline
 
-**GPU 模式（推荐，更快 ~10-20x 实时）：**
+**GPU Mode (recommended, ~10-20x realtime):**
 ```python
 !python -m lyrics_render --input test_video.mp4 --output subtitles.srt --language en --device cuda
 ```
 
-**CPU 模式（较慢，~2-5x 实时）：**
+**CPU Mode (slower, ~2-5x realtime):**
 ```python
 !python -m lyrics_render --input test_video.mp4 --output subtitles.srt --language en --device cpu
 ```
 
-### 5. 查看结果
+### 5. View Results
 
 ```python
 %cat subtitles.srt
@@ -59,9 +59,9 @@ Colab 提供免费 GPU - **建议使用 GPU 以获得最佳性能**。
 
 ---
 
-## 本地安装
+## Local Installation
 
-### 系统依赖
+### System Dependencies
 
 ```bash
 # Ubuntu/Debian
@@ -71,37 +71,37 @@ sudo apt update && sudo apt install -y ffmpeg python3 python3-venv
 brew install ffmpeg python3
 
 # Windows
-# 从 python.org 和 ffmpeg.org 下载安装
+# Download from: python.org and ffmpeg.org
 ```
 
-### Python 设置
+### Python Setup
 
-**GPU 设置（推荐）：**
+**GPU Setup (Recommended):**
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 
-# 安装 PyTorch CUDA 版本
+# Install PyTorch with CUDA
 pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu121
 
 pip install pydub webrtcvad numpy scipy tqdm pytest
 
-# 克隆并安装 FunASR
+# Clone and install FunASR from GitHub
 git clone https://github.com/alibaba/FunASR.git
 cd FunASR && pip install -e ./
 ```
 
-**仅 CPU 设置：**
+**CPU Only Setup (slower):**
 ```bash
 python3 -m venv venv
 source venv/bin/activate
 
-# 安装 PyTorch CPU 版本
+# Install PyTorch CPU version
 pip install torch torchaudio --index-url https://download.pytorch.org/whl/cpu
 
 pip install pydub webrtcvad numpy scipy tqdm pytest
 
-# 克隆并安装 FunASR
+# Clone and install FunASR from GitHub
 git clone https://github.com/alibaba/FunASR.git
 cd FunASR && pip install -e ./
 ```
@@ -110,24 +110,22 @@ cd FunASR && pip install -e ./
 
 ## GPU vs CPU
 
-| 模式 | 速度 | 内存 | 适用场景 |
-|------|------|------|----------|
-| CPU | 2-5x 实时 | ~1-2GB | 测试、短视频 |
-| GPU (CUDA) | 10-20x 实时 | ~2-4GB | 长视频、生产环境 |
-
-Colab 通常提供免费 GPU 访问 - **使用 GPU 性能最佳**。
+| Mode | Speed | Memory | Best For |
+|------|-------|--------|----------|
+| CPU | 2-5x realtime | ~1-2GB | Testing, short videos |
+| GPU (CUDA) | 10-20x realtime | ~2-4GB | Long videos, production |
 
 ---
 
-## 测试工作流
+## Testing Workflow
 
-### 运行单元测试
+### Run Unit Tests
 
 ```bash
 python -m pytest tests/ -v
 ```
 
-### 使用 GPU 处理
+### Process Video with GPU
 
 ```bash
 python -m lyrics_render \
@@ -137,7 +135,7 @@ python -m lyrics_render \
   --device cuda
 ```
 
-### 使用 CPU 处理
+### Process Video with CPU
 
 ```bash
 python -m lyrics_render \
@@ -147,86 +145,87 @@ python -m lyrics_render \
   --device cpu
 ```
 
-### 验证输出
+### Verify Output
 
 ```bash
-# 查看字幕
+# View subtitles
 head -50 subtitles.srt
 
-# 统计条目数
+# Count entries
 grep -c "^[[:digit:]]*$" subtitles.srt
 
-# 检查视频时长
+# Check video duration
 ffprobe -i test_video.mp4 -show_entries format=duration -v quiet -of csv="p=0"
 ```
 
 ---
 
-## 第五步：烧录字幕到视频
+## Step 5: Burn Subtitles into Video
 
-生成 SRT 字幕后，可以使用 FFmpeg 将字幕烧录到视频中：
+Merge the generated SRT file with your video:
 
 ```bash
-# 烧录硬字幕到视频
-ffmpeg -i input_video.mp4 -vf subtitles=subtitles.srt -c:a copy output_with_subs.mp4
+# Burn subtitles into video (hardcoded subtitles)
+ffmpeg -i test_video.mp4 -vf subtitles=subtitles.srt -c:a copy output_with_subs.mp4
 
-# 如果视频已有音轨
-ffmpeg -i input_video.mp4 -vf subtitles=subtitles.srt -c:a copy -map 0:a? output.mp4
+# If the video already has audio, preserve it with -map
+ffmpeg -i test_video.mp4 -vf subtitles=subtitles.srt -c:a copy -map 0:a? output.mp4
 ```
 
 ---
 
-## 故障排除
+## Troubleshooting
 
-### FFmpeg 未找到
+### FFmpeg not found
 ```bash
 sudo apt install ffmpeg  # Ubuntu
 brew install ffmpeg       # macOS
 ```
 
-### CUDA 内存不足
+### CUDA out of memory
 ```bash
-# 使用更小的 batch size 或 CPU
+# Use smaller batch size or CPU
 python -m lyrics_render --input video.mp4 --device cpu --batch-size 1
 ```
 
-### 模型下载失败
+### Model download fails
 ```python
 from funasr import AutoModel
 model = AutoModel(model='FunAudioLLM/Fun-ASR-Nano-2512', trust_remote_code=True)
 ```
 
-### VAD 灵敏度
+### VAD sensitivity
 ```bash
-# 尝试不同的灵敏度级别 (0=最低, 3=最高)
+# Try different levels (0=least, 3=most aggressive)
 python -m lyrics_render --input video.mp4 --vad-aggressiveness 2
 ```
 
 ---
 
-## 项目结构
+## Project Structure
 
 ```
 lyrics_render/
-├── lyrics_render/           # 主包
-│   ├── __init__.py          # 导出
-│   ├── __main__.py         # CLI 入口 (python -m lyrics_render)
+├── lyrics_render/           # Main package
+│   ├── __init__.py          # Exports
+│   ├── __main__.py         # CLI entry (python -m lyrics_render)
 │   ├── _types.py           # AudioSegment, PipelineConfig
 │   ├── _audio.py           # AudioExtractor
 │   ├── _vad.py             # VADSegmenter
 │   ├── _asr.py             # ASRTranscriber
 │   ├── _srt.py             # SRTGenerator
 │   ├── _pipeline.py        # LyricsRenderPipeline
-│   └── _cli.py             # CLI 参数解析
-├── tests/                   # 单元测试
+│   └── _cli.py             # CLI argument parser
+├── tests/                   # Unit tests
 │   ├── test_types.py
 │   ├── test_audio.py
 │   ├── test_vad.py
 │   └── test_srt.py
-├── docs/                     # 英文文档
-│   ├── README_EN.md        # 英文详细说明（含设计原理）
-│   └── INSTALL_EN.md       # 英文安装指南
-├── README.md                # 中文概述（默认入口）
-├── README_EN.md             # 英文概述
-├── INSTALL.md               # 中文安装指南（本文档）
-└── install.sh               # 安装脚本
+├── docs/                     # Documentation
+│   ├── README_EN.md        # English detailed documentation
+│   └── INSTALL_EN.md       # This file
+├── README.md                # Chinese overview
+├── README_EN.md             # English overview
+├── INSTALL.md               # Chinese installation guide
+└── install.sh               # Setup script
+```

@@ -11,7 +11,7 @@ cd lyrics_render
 bash install.sh
 source venv/bin/activate
 
-# 运行流水线
+# 运行流水线 (GPU)
 python -m lyrics_render --input video.mp4 --output subtitles.srt --device cuda
 ```
 
@@ -24,7 +24,8 @@ python -m lyrics_render --input video.mp4 --output subtitles.srt --device cuda
 
 ## 文档
 
-- [安装指南](INSTALL.md) - 详细安装说明（英文）
-- [详细文档](docs/) - 包含中英文完整文档
-- [问题背景与设计原理](docs/README.md) - 中文详细说明
-- [English Documentation](docs/README_EN.md) - English documentation
+| 文档 | 中文 | English |
+|------|------|---------|
+| 快速概览 | 本文件 | [README_EN.md](docs/README_EN.md) |
+| 安装指南 | [INSTALL.md](INSTALL.md) | [docs/INSTALL_EN.md](docs/INSTALL_EN.md) |
+| 设计原理 | [docs/THEORY.md](docs/THEORY.md) | [docs/THEORY_EN.md](docs/THEORY_EN.md) |

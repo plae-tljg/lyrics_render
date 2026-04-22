@@ -144,23 +144,7 @@ python -m lyrics_render --input long_video.mp4 --keep-temp
 
 ---
 
-## Quick Start
-
-### Setup
-
-```bash
-# Clone the repo
-git clone https://github.com/your-repo/lyrics_render.git
-cd lyrics_render
-
-# Run setup script (creates venv and installs deps)
-bash install.sh
-
-# Activate virtual environment
-source venv/bin/activate
-```
-
-### Usage
+## Usage
 
 ```bash
 # Basic (CPU)
@@ -185,16 +169,6 @@ ffmpeg -i video.mp4 -vf subtitles=subtitles.srt -c:a copy output_with_subs.mp4
 ffmpeg -i video.mp4 -vf subtitles=subtitles.srt -c:a copy -map 0:a? output.mp4
 ```
 
-### Run Tests
-
-```bash
-# Run all unit tests
-python -m pytest tests/ -v
-
-# Run specific test file
-python -m pytest tests/test_types.py -v
-```
-
 ---
 
 ## Project Structure
@@ -202,25 +176,21 @@ python -m pytest tests/test_types.py -v
 ```
 lyrics_render/
 ├── lyrics_render/           # Main package
+│   ├── __init__.py          # Exports
+│   ├── __main__.py         # CLI entry (python -m lyrics_render)
 │   ├── _types.py           # AudioSegment, PipelineConfig
-│   ├── _audio.py           # AudioExtractor (FFmpeg wrapper)
-│   ├── _vad.py             # VADSegmenter (WebRTC VAD)
-│   ├── _asr.py             # ASRTranscriber (FunASR)
-│   ├── _srt.py             # SRTGenerator (SRT/JSON output)
-│   ├── _pipeline.py        # LyricsRenderPipeline (orchestrator)
-│   └── _cli.py             # Command-line interface
+│   ├── _audio.py           # AudioExtractor
+│   ├── _vad.py             # VADSegmenter
+│   ├── _asr.py             # ASRTranscriber
+│   ├── _srt.py             # SRTGenerator
+│   ├── _pipeline.py        # LyricsRenderPipeline
+│   └── _cli.py             # CLI argument parser
 ├── tests/                   # Unit tests
 ├── docs/                    # Documentation
-│   └── README.md           # Chinese documentation
-├── install.sh              # Setup script
-├── requirements.txt        # Python dependencies
-├── README.md               # This file (English)
-└── README_EN.md            # Alternative English reference
+│   ├── README_EN.md        # This file
+│   └── INSTALL_EN.md       # Installation guide
+├── README.md               # Chinese overview
+├── README_EN.md            # English overview
+├── INSTALL.md              # Chinese installation guide
+└── install.sh              # Setup script
 ```
-
----
-
-## Documentation
-
-- [Installation Guide](INSTALL.md) - Full setup instructions
-- [docs/README.md](docs/README.md) - 中文文档 (Chinese documentation)
